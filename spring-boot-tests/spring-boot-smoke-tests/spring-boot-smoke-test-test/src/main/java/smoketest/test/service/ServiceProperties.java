@@ -23,7 +23,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * @author Phillip Webb
  */
-@ConfigurationProperties
+//@ConfigurationProperties
 public class ServiceProperties {
 
 	private String vehicleServiceRootUrl = "http://localhost:8080/vs";

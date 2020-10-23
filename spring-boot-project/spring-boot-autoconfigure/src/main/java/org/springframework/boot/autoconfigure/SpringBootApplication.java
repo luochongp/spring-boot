@@ -53,6 +53,17 @@ import org.springframework.data.repository.Repository;
 @Documented
 @Inherited
 @SpringBootConfiguration
+/**
+ *  @EnableAutoConfiguration 的主要功能是启动spring应用程序上下文时进行自动
+ *  配置，它会尝试猜测并配置项目可能需要的Bean，自动配置通常是基于项目classpath
+ *  中引入的类和已定义的Bean来实现的，在此过程中，被自动配置的组件来自项目自身和
+ *  项目所依赖的jar包中。
+ *  举个栗子：如果将tomcat-embedded.jar添加到classpath下，那么@EnableAutoConfiguration
+ *  会认为你准备使用 TomcatServletWebServerFactory类，并帮你初始化相关配置，与此同时，
+ *  如果自定义了基于 TomcatServletWebServerFactory 的Bean，那么@EnableAutoConfiguration
+ *  将不会进行 TomcatServletWebServerFactory 类的初始化。这一系列的操作判断都由
+ *  springboot来完成
+ */
 @EnableAutoConfiguration
 @ComponentScan(excludeFilters = { @Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
 		@Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class) })

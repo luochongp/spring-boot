@@ -82,7 +82,7 @@ import org.springframework.core.io.support.SpringFactoriesLoader;
 @AutoConfigurationPackage
 @Import(AutoConfigurationImportSelector.class)
 public @interface EnableAutoConfiguration {
-
+    //用来覆盖配置开启/关闭自动配置的功能
 	String ENABLED_OVERRIDE_PROPERTY = "spring.boot.enableautoconfiguration";
 
 	/**

@@ -262,15 +262,27 @@ public class SpringApplication {
 	 * @param primarySources the primary bean sources
 	 * @see #run(Class, String[])
 	 * @see #setSources(Set)
+	 * 1、第一个参数 resourceLoader，为资源加载的接口，在springboot启动时打印对应的
+	 * 的banner信息，默认采用的是 DefaultResourceLoader
+	 * 2、第二个参数 primarySources，为可变参数，默认传入springboot的入口类，如果作为项目
+	 *    的引导类，此参数传入的类需要满足一个条件，那就是被注解 @EnableAutoConfiguration
+	 *    或其他组合注解 @SpringBootApplication 标注，只有被这类注解标的类才能开启springboot
+	 *    的自动配置
+	 *
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public SpringApplication(ResourceLoader resourceLoader, Class<?>... primarySources) {
+		//1、赋值成员变量 resourceLoader，primarySources
 		this.resourceLoader = resourceLoader;
 		Assert.notNull(primarySources, "PrimarySources must not be null");
 		this.primarySources = new LinkedHashSet<>(Arrays.asList(primarySources));
+		//2、推断web应用程序类型
 		this.webApplicationType = WebApplicationType.deduceFromClasspath();
+        //3、加载并初始化 ApplicationContextInitializer 及其相关实现类
 		setInitializers((Collection) getSpringFactoriesInstances(ApplicationContextInitializer.class));
+        //4、加载并初始化 ApplicationListener 及其相关实现类
 		setListeners((Collection) getSpringFactoriesInstances(ApplicationListener.class));
+		//5、推断 main 方法Class类
 		this.mainApplicationClass = deduceMainApplicationClass();
 	}
 
@@ -420,6 +432,14 @@ public class SpringApplication {
 		return getSpringFactoriesInstances(type, new Class<?>[] {});
 	}
 
+	/**
+	 * @param type
+	 * @param parameterTypes
+	 * @param args
+	 * @param <T>
+	 * @return
+	 * 获取 META-INF/spring.factories 中配置的类实例
+	 */
 	private <T> Collection<T> getSpringFactoriesInstances(Class<T> type, Class<?>[] parameterTypes, Object... args) {
 		ClassLoader classLoader = getClassLoader();
 		// Use names and ensure unique to protect against duplicates
@@ -1232,8 +1252,16 @@ public class SpringApplication {
 	 * @param primarySources the primary sources to load
 	 * @param args the application arguments (usually passed from a Java main method)
 	 * @return the running {@link ApplicationContext}
+	 * 一、构造流程:
+	 * 1.通过run方法进行 SpringApplication 类的实例，然后再针对实例化对象
+	 *   调用另外一个run方法来完成整个项目的初始化和启动
+	 *
 	 */
 	public static ConfigurableApplicationContext run(Class<?>[] primarySources, String[] args) {
+		/**
+		 * 创建 SpringApplication 对象并执行其run方法，primarySources为加载的主要资源类,
+		 * 通常就是springboot的入口类，args为传递给应用程序的参数信息
+		 */
 		return new SpringApplication(primarySources).run(args);
 	}
 
